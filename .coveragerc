@@ -1,0 +1,6 @@
+[run]
+omit=tests/*, prometheus_pusher/version.py
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.:
