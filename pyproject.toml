@@ -31,7 +31,7 @@ Homepage = "https://github.com/bigbag/prometheus-pusher"
 Issues = "https://github.com/bigbag/prometheus-pusher/issues"
 
 [dependency-groups]
-dev = ["mypy>=1.19,<2", "pytest>=9.0,<10", "pytest-cov>=7.0,<8", "ruff>=0.15,<1"]
+dev = ["mypy>=2.3.0,<3", "pytest>=9.0,<10", "pytest-cov>=7.0,<8", "ruff>=0.15,<1"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/prometheus_pusher"]
