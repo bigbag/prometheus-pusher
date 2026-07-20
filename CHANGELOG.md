@@ -1,8 +1,10 @@
 # Changelog
 
-## 1.0.0
+## 1.0.0 (2026-07-20)
 
-- Modernized packaging, development tools, and CI for Python 3.11 through 3.14.
-- Added `MonitoringAdapter.shutdown()` and per-adapter, daemonized worker lifecycle management.
-- Preserved `monitoring_adapter`, `MonitoringAdapter`, `Producer`, and existing adapter method signatures.
-- Removed support for Python 3.7 through 3.10.
+* feat: modernize prometheus pusher 1.0 [Pavel Liashkov]
+
+## 0.1.0 (2024-10-18)
+
+* Init [Pavel Liashkov]
+
