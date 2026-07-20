@@ -1,69 +1,69 @@
 # prometheus-pusher
 
-[![CI](https://github.com/bigbag/prometheus-pusher/workflows/CI/badge.svg)](https://github.com/bigbag/prometheus-pusher/actions?query=workflow%3ACI)
-[![codecov](https://codecov.io/gh/bigbag/prometheus-pusher/branch/main/graph/badge.svg?token=ZRUN7SUKB2)](https://codecov.io/gh/bigbag/prometheus-pusher)
-[![pypi](https://img.shields.io/pypi/v/prometheus-pusher.svg)](https://pypi.python.org/pypi/prometheus-pusher)
-[![downloads](https://img.shields.io/pypi/dm/prometheus-pusher.svg)](https://pypistats.org/packages/prometheus-pusher)
-[![versions](https://img.shields.io/pypi/pyversions/prometheus-pusher.svg)](https://github.com/bigbag/prometheus-pusher)
-[![license](https://img.shields.io/github/license/bigbag/prometheus-pusher.svg)](https://github.com/bigbag/prometheus-pusher/blob/master/LICENSE)
+A lifecycle-safe helper for pushing application metrics to a Prometheus Pushgateway.
 
+## Requirements
 
-**prometheus-pusher** is a helper for push metrics in Prometheus push gateway.
+Python 3.11 or newer. CI validates Python 3.11, 3.12, 3.13, and 3.14.
 
-* [Project Changelog](CHANGELOG.md)
+## Install
 
-## Installation
+```console
+uv add prometheus-pusher
+```
 
-prometheus-pusher is available on PyPI.
-Use pip to install:
+```console
+pip install prometheus-pusher
+```
 
-    $ pip install prometheus-pusher
+## Usage
 
-## Basic Usage
-
-```py
-from prometheus_client import CollectorRegistry
-from prometheus_client import Counter
+```python
+from prometheus_client import CollectorRegistry, Counter
 
 from prometheus_pusher import monitoring_adapter
 
-monitoring_registry = CollectorRegistry()
-demo_count_metric = Counter("demo", "Demo count", registry=monitoring_registry)
-
+registry = CollectorRegistry()
+requests = Counter("demo_requests_total", "Number of demo requests", registry=registry)
 
 monitoring_adapter.startup(
     gateway="http://127.0.0.1:9091",
-    job_name="test_job",
-    user="testuser",
-    password="testpassword",
-    registry=monitoring_registry,
+    job_name="demo",
+    registry=registry,
     is_enabled=True,
 )
 
-
-def demo_send():
-    demo_count_metric.inc()
-    monitoring_adapter.send()
-    return
-
-
-def demo_serve():
-    demo_count_metric.inc()
-    monitoring_adapter.serve()
-    return
-
-
-if __name__ == "__main__":
-    demo_send()
-    demo_serve()
-    print("Test")
-    
+try:
+    requests.inc()
+    monitoring_adapter.send()  # Push immediately.
+    monitoring_adapter.serve(worker_timeout=10)  # Then push every 10 seconds.
+finally:
+    monitoring_adapter.shutdown()
 ```
 
-## License
+`startup()` configures the adapter. `send()` performs one push. `serve()` starts one daemon worker and is idempotent while that worker is alive. `shutdown()` signals and joins the adapter-owned worker; call it during application shutdown. A disabled adapter (`is_enabled=False`) remains a no-op.
 
-prometheus-pusher is developed and distributed under the Apache 2.0 license.
+Pass `user` and `password` for HTTP Basic authentication. Set `ssl_verify=True` for HTTPS endpoints with certificate verification; `ssl_verify=False` disables certificate validation and should be used only for trusted development environments. Push and network failures are logged and do not interrupt application execution.
 
-## Reporting a Security Vulnerability
+## Migrating from 0.1.0
 
-See our [security policy](https://github.com/bigbag/prometheus-pusher/security/policy).
+1. Upgrade the application to Python 3.11 or newer.
+2. Retain existing `monitoring_adapter.startup(...)`, `send()`, and `serve()` calls.
+3. Add `monitoring_adapter.shutdown()` to the application's graceful-shutdown path.
+
+Version 1.0.0 replaces the global, never-stopped worker with lifecycle owned by each `MonitoringAdapter` instance.
+
+## Development
+
+```console
+uv sync --all-groups
+uv run ruff format --check src tests examples
+uv run ruff check src tests examples
+uv run mypy src
+uv run pytest --cov=prometheus_pusher
+uv build
+```
+
+## License and security
+
+Distributed under the Apache License 2.0. See the [security policy](https://github.com/bigbag/prometheus-pusher/security/policy) to report vulnerabilities.
