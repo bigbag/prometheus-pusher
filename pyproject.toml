@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling>=1.31.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "prometheus-pusher"
+version = "1.0.0"
+description = "A lifecycle-safe helper for pushing metrics to Prometheus Pushgateway"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "Pavel Liashkov", email = "pavel.liashkov@protonmail.com" }]
+keywords = ["prometheus", "pushgateway", "metrics", "monitoring"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = ["prometheus-client>=0.23,<1"]
+
+[project.urls]
+Changelog = "https://github.com/bigbag/prometheus-pusher/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/bigbag/prometheus-pusher"
+Issues = "https://github.com/bigbag/prometheus-pusher/issues"
+
+[dependency-groups]
+dev = ["mypy>=1.19,<2", "pytest>=9.0,<10", "pytest-cov>=7.0,<8", "ruff>=0.15,<1"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/prometheus_pusher"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+files = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra --strict-config"
