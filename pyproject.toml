@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "prometheus-pusher"
-version = "1.0.0"
+version = "1.0.1"
 description = "A lifecycle-safe helper for pushing metrics to Prometheus Pushgateway"
 readme = "README.md"
 requires-python = ">=3.11"

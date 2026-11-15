@@ -5,7 +5,7 @@ from prometheus_pusher import helper
 
 
 def test_package_exports_the_supported_1_0_api() -> None:
-    assert package.__version__ == "1.0.0"
+    assert package.__version__ == "1.0.1"
     assert package.__all__ == [
         "MonitoringAdapter",
         "Producer",
