@@ -4,7 +4,7 @@ A lifecycle-safe helper for pushing application metrics to a Prometheus Pushgate
 
 ## Requirements
 
-Python 3.11 or newer. CI validates Python 3.11, 3.12, 3.13, and 3.14.
+Python 3.11 or newer. CI validates Python 3.11, 3.12, 3.13, 3.14, and 3.15.
 
 ## Install
 
